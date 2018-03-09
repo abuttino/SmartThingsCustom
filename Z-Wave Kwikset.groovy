@@ -78,6 +78,11 @@ metadata {
 		standardTile("lock", "device.lock", inactiveLabel: false, decoration: "flat", width: 2, height: 2) {
 			state "default", label:'lock', action:"lock.lock", icon:"st.locks.lock.locked", nextState:"locking"
 		}
+		}
+		standardTile("locked by keypad", "device.lock", inactiveLabel: false, decoration: "flat", width: 2, height: 2) {
+			state "default", label:'locked by keypad', action:"lock.lock", icon:"st.locks.lock.lockedbykeypad", nextState:"locking"
+		}
+		{
 		standardTile("unlock", "device.lock", inactiveLabel: false, decoration: "flat", width: 2, height: 2) {
 			state "default", label:'unlock', action:"lock.unlock", icon:"st.locks.lock.unlocked", nextState:"unlocking"
 		}
@@ -87,7 +92,7 @@ metadata {
 		standardTile("refresh", "device.lock", inactiveLabel: false, decoration: "flat", width: 2, height: 2) {
 			state "default", label:'', action:"refresh.refresh", icon:"st.secondary.refresh"
 		}
-
+        {
 		main "toggle"
 		details(["toggle", "lock", "unlock", "battery", "refresh"])
 	}
@@ -309,6 +314,9 @@ def zwaveEvent(DoorLockOperationReport cmd) {
 	} else if (cmd.doorLockMode >= 0x40) {
 		map.value = "unknown"
 		map.descriptionText = "Unknown state"
+	} else if (cmd.doorLockMode == 0x00) {
+		map.value = "locked by keypad"
+		map.descriptionText = "Locked by Keypad"
 	} else if (cmd.doorLockMode == 0x01) {
 		map.value = "unlocked with timeout"
 		map.descriptionText = "Unlocked with timeout"
