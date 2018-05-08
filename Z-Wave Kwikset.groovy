@@ -14,7 +14,7 @@
  *
  */
 metadata {
-	definition (name: "Z-Wave Lock AB", namespace: "smartthings", author: "AnthonyButtino") {
+	definition (name: "Z-Wave Lock AJB", namespace: "smartthings", author: "SmartThings", runLocally: false, minHubCoreVersion: '000.017.0012', executeCommandsLocally: false) {
 		capability "Actuator"
 		capability "Lock"
 		capability "Polling"
@@ -24,6 +24,7 @@ metadata {
 		capability "Battery"
 		capability "Health Check"
 		capability "Configuration"
+        attribute "lock", "string"
 
 		// Generic
 		fingerprint deviceId: "0x4003", inClusters: "0x98"
@@ -68,6 +69,7 @@ metadata {
 		multiAttributeTile(name:"toggle", type: "generic", width: 6, height: 4){
 			tileAttribute ("device.lock", key: "PRIMARY_CONTROL") {
 				attributeState "locked", label:'locked', action:"lock.unlock", icon:"st.locks.lock.locked", backgroundColor:"#00A0DC", nextState:"unlocking"
+                attributeState "locked by keypad", label:'locked by keypad', action:"lock.unlock", icon:"st.locks.lock.locked", backgroundColor:"#00A0DC", nextState:"unlocking"
 				attributeState "unlocked", label:'unlocked', action:"lock.lock", icon:"st.locks.lock.unlocked", backgroundColor:"#ffffff", nextState:"locking"
 				attributeState "unlocked with timeout", label:'unlocked', action:"lock.lock", icon:"st.locks.lock.unlocked", backgroundColor:"#ffffff", nextState:"locking"
 				attributeState "unknown", label:"unknown", action:"lock.lock", icon:"st.locks.lock.unknown", backgroundColor:"#ffffff", nextState:"locking"
@@ -78,11 +80,6 @@ metadata {
 		standardTile("lock", "device.lock", inactiveLabel: false, decoration: "flat", width: 2, height: 2) {
 			state "default", label:'lock', action:"lock.lock", icon:"st.locks.lock.locked", nextState:"locking"
 		}
-		}
-		standardTile("locked by keypad", "device.lock", inactiveLabel: false, decoration: "flat", width: 2, height: 2) {
-			state "default", label:'locked by keypad', action:"lock.lock", icon:"st.locks.lock.lockedbykeypad", nextState:"locking"
-		}
-		{
 		standardTile("unlock", "device.lock", inactiveLabel: false, decoration: "flat", width: 2, height: 2) {
 			state "default", label:'unlock', action:"lock.unlock", icon:"st.locks.lock.unlocked", nextState:"unlocking"
 		}
@@ -92,7 +89,7 @@ metadata {
 		standardTile("refresh", "device.lock", inactiveLabel: false, decoration: "flat", width: 2, height: 2) {
 			state "default", label:'', action:"refresh.refresh", icon:"st.secondary.refresh"
 		}
-        {
+
 		main "toggle"
 		details(["toggle", "lock", "unlock", "battery", "refresh"])
 	}
@@ -314,9 +311,6 @@ def zwaveEvent(DoorLockOperationReport cmd) {
 	} else if (cmd.doorLockMode >= 0x40) {
 		map.value = "unknown"
 		map.descriptionText = "Unknown state"
-	} else if (cmd.doorLockMode == 0x00) {
-		map.value = "locked by keypad"
-		map.descriptionText = "Locked by Keypad"
 	} else if (cmd.doorLockMode == 0x01) {
 		map.value = "unlocked with timeout"
 		map.descriptionText = "Unlocked with timeout"
@@ -621,11 +615,11 @@ private def handleAlarmReportUsingAlarmType(cmd) {
 			break
 		case 18: // Locked with keypad
 			codeID = readCodeSlotId(cmd)
-			map = [ name: "lock", value: "locked" ]
+			map = [ name: "lock", value: "locked by keypad" ]
 			// Kwikset lock reporting code id as 0 when locked using the lock keypad button
 			if (isKwiksetLock() && codeID == 0) {
-				map.descriptionText = "Locked by Keypad"
-				map.data = [ method: "manual" ]
+				map.descriptionText = "Locked With Keypad"
+				map.data = [ method: "keypad" ]
 			} else {
 				codeName = getCodeName(lockCodes, codeID)
 				map.descriptionText = "Locked by \"$codeName\""
