@@ -71,7 +71,7 @@ metadata {
 				attributeState "locked", label:'locked', action:"lock.unlock", icon:"st.locks.lock.locked", backgroundColor:"#00A0DC", nextState:"unlocking"
                 attributeState "locked by keypad", label:'locked by keypad', action:"lock.unlock", icon:"st.locks.lock.locked", backgroundColor:"#00A0DC", nextState:"unlocking"
 				attributeState "unlocked", label:'unlocked', action:"lock.lock", icon:"st.locks.lock.unlocked", backgroundColor:"#ffffff", nextState:"locking"
-				attributeState "unlocked with timeout", label:'unlocked', action:"lock.lock", icon:"st.locks.lock.unlocked", backgroundColor:"#ffffff", nextState:"locking"
+				attributeState "Unlocked With Timeout", label:'unlocked', action:"lock.lock", icon:"st.locks.lock.unlocked", backgroundColor:"#ffffff", nextState:"locking"
 				attributeState "unknown", label:"unknown", action:"lock.lock", icon:"st.locks.lock.unknown", backgroundColor:"#ffffff", nextState:"locking"
 				attributeState "locking", label:'locking', icon:"st.locks.lock.locked", backgroundColor:"#00A0DC"
 				attributeState "unlocking", label:'unlocking', icon:"st.locks.lock.unlocked", backgroundColor:"#ffffff"
@@ -305,7 +305,8 @@ def zwaveEvent(DoorLockOperationReport cmd) {
 	// DoorLockOperationReport is called when trying to read the lock state or when the lock is locked/unlocked from the DTH or the smart app
 	def map = [ name: "lock" ]
 	map.data = [ lockName: device.displayName ]
-	if (cmd.doorLockMode == 0xFF) {
+	log.debug "[MY-DTH] Log Found = cmd.doorLockMode"
+    if (cmd.doorLockMode == 0xFF) {
 		map.value = "locked"
 		map.descriptionText = "Locked"
 	} else if (cmd.doorLockMode >= 0x40) {
@@ -618,7 +619,7 @@ private def handleAlarmReportUsingAlarmType(cmd) {
 			map = [ name: "lock", value: "locked by keypad" ]
 			// Kwikset lock reporting code id as 0 when locked using the lock keypad button
 			if (isKwiksetLock() && codeID == 0) {
-				map.descriptionText = "Locked With Keypad"
+				map.descriptionText = "Locked by Keypad"
 				map.data = [ method: "keypad" ]
 			} else {
 				codeName = getCodeName(lockCodes, codeID)
