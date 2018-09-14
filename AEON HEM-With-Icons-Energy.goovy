@@ -7,8 +7,7 @@ Status:
 2. Done: MEarly - Set Washer/Dryer On=pushed event; Washer/Dryer Off=held event. Allows notifications at start/end of cycle, & start/stop logging under Recent Activity.     
 2. Done: Danabw - All Preferences entries labeled 
 3. Need help: 1) Add reporting frequency setting to preferences (currently only managed in Configuration section, not available in preferences
-4. Need help: 2) ID what KWhDelay and detailDelay settings control, and remove them from Preferences if user control not necessary
-5 Done: Abuttino edit to get energy monitoring as well as MikeMaxwell's design
+4. Need help: 2) ID what KWhDelay and detailDelay settings control, and remove them from Preferences if user control not necessary  
 */
 
 metadata {
@@ -157,7 +156,7 @@ metadata {
 		valueTile("power", "device.power") {
 			state (
 				"default", 
-				label:'${currentValue}W', 
+				label:'${currentValue}W', icon:"st.samsung.da.dryer_ic_dryer", 
                 foregroundColor: "#000000", 
                 backgroundColor:"#79b821"
 			)
@@ -358,6 +357,7 @@ def zwaveEvent(physicalgraph.zwave.commands.multichannelv3.MultiChannelCmdEncap 
                 } else {
                 	sendEvent(name: "switch", value: "off", displayed: false)
                 }
+                //log.debug "mc3v- name: ${name}, value: ${value}, unit: ${str}"
             	return [name: name, value: value.toInteger(), unit: str, displayed: false]
             }
         }
