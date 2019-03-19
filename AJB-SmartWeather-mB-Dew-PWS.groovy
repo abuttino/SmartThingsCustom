@@ -238,7 +238,9 @@ def pollUsingZipCode(String zipCode) {
     def obs = getTwcConditions(zipCode)
     if (obs) {
         // TODO def weatherIcon = obs.icon_url.split("/")[-1].split("\\.")[0]
-
+		
+		// The below commented lines are retrieved in PWS
+		
         // send(name: "temperature", value: obs.temperature, unit: tempUnits)
         // send(name: "feelsLike", value: obs.temperatureFeelsLike, unit: tempUnits)
 		
@@ -250,8 +252,8 @@ def pollUsingZipCode(String zipCode) {
         // send(name: "humidity", value: obs.relativeHumidity, unit: "%")
         send(name: "weather", value: obs.wxPhraseShort)
         send(name: "weatherIcon", value: obs.iconCode as String, displayed: false)
-        send(name: "wind", value: obs.windSpeed as String, unit: windUnits) // as String because of bug in determining state change of 0 numbers
-        send(name: "windVector", value: "${obs.windDirectionCardinal} ${obs.windSpeed} ${windUnits}")
+        // send(name: "wind", value: obs.windSpeed as String, unit: windUnits) // as String because of bug in determining state change of 0 numbers
+        // send(name: "windVector", value: "${obs.windDirectionCardinal} ${obs.windSpeed} ${windUnits}")
         log.trace "Getting location info"
         def loc = getTwcLocation(zipCode).location
         def cityValue = "${loc.city}, ${loc.adminDistrictCode} ${loc.countryCode}"
@@ -334,21 +336,17 @@ def pollUsingPwsId(String stationId) {
         def dataScale = obs.imperial ? 'imperial' : 'metric'
         send(name: "temperature", value: convertTemperature(obs[dataScale].temp, dataScale, tempUnits), unit: tempUnits)
         send(name: "feelsLike", value: convertTemperature(obs[dataScale].windChill, dataScale, tempUnits), unit: tempUnits)
-		// send(name: "dewpoint", value: obs.temperatureDewPoint, unit: tempUnits)
-        // sendEvent(name: "power", value: obs.temperatureDewPoint, unit: tempUnits)
-        // sendEvent(name: "voltage", value: obs.pressureAltimeter)
-        // send(name: "pressuremb", value: obs.pressureAltimeter)
         send(name: "humidity", value: obs.humidity, unit: "%")
         // send(name: "weather", value: "n/a")
         // send(name: "weatherIcon", value: null as String, displayed: false)
-        // send(name: "wind", value: convertWindSpeed(obs[dataScale].windSpeed, dataScale, tempUnits) as String, unit: windUnits) // as String because of bug in determining state change of 0 numbers
-        // send(name: "windVector", value: "${obs.winddir}° ${convertWindSpeed(obs[dataScale].windSpeed, dataScale, tempUnits)} ${windUnits}")
+        send(name: "wind", value: convertWindSpeed(obs[dataScale].windSpeed, dataScale, tempUnits) as String, unit: windUnits) // as String because of bug in determining state change of 0 numbers
+        send(name: "windVector", value: "${obs.winddir}° ${convertWindSpeed(obs[dataScale].windSpeed, dataScale, tempUnits)} ${windUnits}")
         def cityValue = obs.neighborhood
         if (cityValue != device.currentValue("city")) {
             send(name: "city", value: cityValue, isStateChange: true)
         }
 
-        send(name: "ultravioletIndex", value: obs.uv)
+        // send(name: "ultravioletIndex", value: obs.uv)
         // send(name: "uvDescription", value: "n/a")
 
         // send(name: "localSunrise", value: "n/a", descriptionText: "Sunrise is not supported when using PWS")
