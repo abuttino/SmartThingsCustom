@@ -16,7 +16,7 @@
 import physicalgraph.zigbee.zcl.DataType
 
 metadata {
-	definition (name: "ZigBee Lock", namespace: "smartthings", author: "SmartThings", genericHandler: "Zigbee") {
+	definition (name: "AJB SmartLock Zigbee", namespace: "abuttino", author: "abuttino", genericHandler: "Zigbee") {
 		capability "Actuator"
 		capability "Lock"
 		capability "Polling"
@@ -595,9 +595,12 @@ private def parseCommandResponse(String description) {
 				break
 			case 6: //Unlock Invalid Schedule
 				break
+			
 			case 7: // locked by touching the keypad
-				responseMap.value = "locked by keypad"
+				responseMap.value = "keypadLocked"
 				responseMap.descriptionText = "locked by keypad"
+				break
+			
 			case 8: // locked using the key
 			case 13: // locked using the Thumbturn
 				responseMap.value = "locked"
