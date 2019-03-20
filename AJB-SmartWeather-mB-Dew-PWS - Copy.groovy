@@ -18,7 +18,7 @@
  *  Date: 2013-04-30
  */
 metadata {
-    definition (name: "SmartWeatherv2019-withPWS", namespace: "abuttino", author: "abuttino") {
+    definition (name: "AJB SmartWeatherv2019-withPWS", namespace: "abuttino", author: "abuttino") {
         capability "Illuminance Measurement"
         capability "Temperature Measurement"
         capability "Relative Humidity Measurement"
