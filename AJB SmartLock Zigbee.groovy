@@ -596,6 +596,8 @@ private def parseCommandResponse(String description) {
 			case 6: //Unlock Invalid Schedule
 				break
 			case 7: // locked by touching the keypad
+				responseMap.value = "locked by keypad"
+				responseMap.descriptionText = "locked by keypad"
 			case 8: // locked using the key
 			case 13: // locked using the Thumbturn
 				responseMap.value = "locked"
