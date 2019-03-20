@@ -140,7 +140,7 @@ metadata {
         }
 
         valueTile("pressureMb", "device.pressuremb", decoration: "flat", height: 1, width: 2) {
-            state "default", label:'${currentValue} "Mh'
+            state "default", label:'${currentValue} "Hg'
         }
 
         valueTile("percentPrecip", "device.percentPrecip", decoration: "flat", height: 1, width: 2) {
@@ -188,7 +188,7 @@ metadata {
 
         main(["temperature", "weatherIcon","feelsLike"])
         details(["temperature", "feelsLike", "weatherIcon", "humidity", "wind",
-                 "weather", "pressureMb", "percentPrecip", "dewPoint", "light",
+                 "dewPoint", "pressureMb", "percentPrecip", "weather", "light",
                  "rise", "set",
                  "refresh",
                  "today", "tonight", "tomorrow", "lastUpdate",
