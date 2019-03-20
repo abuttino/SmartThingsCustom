@@ -136,7 +136,7 @@ metadata {
         }
 
         valueTile("dewPoint", "device.dewpoint", decoration: "flat", height: 1, width: 2) {
-            state "default", label:'Dewpoint: ${currentValue}°'
+            state "default", label:'Dewpoint ${currentValue}°'
         }
 
         valueTile("pressureMb", "device.pressuremb", decoration: "flat", height: 1, width: 2) {
