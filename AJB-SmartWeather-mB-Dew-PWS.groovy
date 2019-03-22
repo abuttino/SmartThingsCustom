@@ -173,7 +173,7 @@ metadata {
         }
 		
 		valueTile("station", "device.stationIdent", decoration: "flat", height: 1, width: 2) {
-            state "default", label:'Station: ${currentValue}'
+            state "default", label:'PWS: ${currentValue}'
         }
 		
 		valueTile("uvDesc", "device.uvDescription", decoration: "flat", height: 1, width: 2) {
