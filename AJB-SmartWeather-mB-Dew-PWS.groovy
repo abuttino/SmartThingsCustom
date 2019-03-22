@@ -50,6 +50,7 @@ metadata {
         attribute "forecastTomorrow", "string"
 		attribute "pressuremb", "string"
 		attribute "dewpoint", "string"
+		attribute "stationIdent", "string"
     }
 
     preferences {
@@ -170,6 +171,18 @@ metadata {
         valueTile("light", "device.illuminance", decoration: "flat", height: 1, width: 2) {
             state "default", label:'${currentValue} lux'
         }
+		
+		valueTile("station", "device.stationIdent", decoration: "flat", height: 1, width: 2) {
+            state "default", label:'Station: ${currentValue}'
+        }
+		
+		valueTile("uvDesc", "device.uvDescription", decoration: "flat", height: 1, width: 2) {
+            state "default", label:'${currentValue}'
+        }
+		
+		valueTile("uvIndex", "device.ultravioletIndex", decoration: "flat", height: 1, width: 2) {
+            state "default", label:'Index: ${currentValue}'
+        }
 
         valueTile("today", "device.forecastToday", decoration: "flat", height: 1, width: 3) {
             state "default", label:'Today:\n${currentValue}'
@@ -191,7 +204,7 @@ metadata {
         details(["temperature", "feelsLike", "weatherIcon", "humidity", "wind",
                  "dewPoint", "pressureMb", "percentPrecip", "weather", "light",
                  "rise", "set",
-                 "refresh",
+                 "refresh", "uvDesc", "uvIndex", "station",
                  "today", "tonight", "tomorrow", "lastUpdate",
                  "alert"])}
 }
@@ -342,6 +355,7 @@ def pollUsingPwsId(String stationId) {
 		send(name: "feelsLike", value: convertTemperature(obs[dataScale].heatIndex, dataScale, tempUnits), unit: tempUnits)
 		send(name: "dewpoint", value: convertTemperature(obs[dataScale].dewpt, dataScale, tempUnits), unit: tempUnits)
         send(name: "humidity", value: obs.humidity, unit: "%")
+		send(name: "stationIdent", value: obs.stationID)
         send(name: "pressuremb", value: obs[dataScale].pressure)
         sendEvent(name: "voltage", value: obs[dataScale].pressure)
 		sendEvent(name: "power", value: convertTemperature(obs[dataScale].dewpt, dataScale, tempUnits), unit: tempUnits)
