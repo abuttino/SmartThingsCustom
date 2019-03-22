@@ -240,15 +240,13 @@ def pollUsingZipCode(String zipCode) {
         // TODO def weatherIcon = obs.icon_url.split("/")[-1].split("\\.")[0]
 		
 		// The below commented lines are retrieved in PWS
-		
-        // send(name: "temperature", value: obs.temperature, unit: tempUnits)
-        // send(name: "feelsLike", value: obs.temperatureFeelsLike, unit: tempUnits)
+
 		
 		// Uncomment the next NINE lines if you want to use ONLY Zipcode
-		send(name: "dewpoint", value: obs.temperatureDewPoint, unit: tempUnits)
-		send(name: "pressuremb", value: obs.pressureAltimeter)
-        sendEvent(name: "power", value: obs.temperatureDewPoint, unit: tempUnits)
-        sendEvent(name: "voltage", value: obs.pressureAltimeter)
+		// send(name: "dewpoint", value: obs.temperatureDewPoint, unit: tempUnits)
+		// send(name: "pressuremb", value: obs.pressureAltimeter)
+        // sendEvent(name: "power", value: obs.temperatureDewPoint, unit: tempUnits)
+        // sendEvent(name: "voltage", value: obs.pressureAltimeter)
         // send(name: "humidity", value: obs.relativeHumidity, unit: "%")
         send(name: "weather", value: obs.wxPhraseShort)
         send(name: "weatherIcon", value: obs.iconCode as String, displayed: false)
@@ -331,13 +329,23 @@ def pollUsingPwsId(String stationId) {
     def tempUnits = getTemperatureScale()
     def windUnits = tempUnits == "C" ? "KPH" : "MPH"
     def obsWrapper = getTwcPwsConditions(stationId)
+    log.debug obsWrapper
     if (obsWrapper && obsWrapper.observations && obsWrapper.observations.size()) {
         def obs = obsWrapper.observations[0]
+        def obsLocal = obsWrapper.observations[0].imperial
         def dataScale = obs.imperial ? 'imperial' : 'metric'
         send(name: "temperature", value: convertTemperature(obs[dataScale].temp, dataScale, tempUnits), unit: tempUnits)
-        send(name: "feelsLike", value: convertTemperature(obs[dataScale].windChill, dataScale, tempUnits), unit: tempUnits)
+        
+		// Uncomment line for Windchill during summer months and vice versa
+		// send(name: "feelsLike", value: convertTemperature(obs[dataScale].windChill, dataScale, tempUnits), unit: tempUnits)
+		send(name: "feelsLike", value: convertTemperature(obs[dataScale].heatIndex, dataScale, tempUnits), unit: tempUnits)
+		// send(name: "dewpoint", value: convertTemperature(obs[dataScale].dewpt, dataScale, tempUnits), unit: tempUnits)
+		send(name: "dewpoint", value: obsLocal.dewpt)
         send(name: "humidity", value: obs.humidity, unit: "%")
-        // send(name: "weather", value: "n/a")
+        send(name: "pressuremb", value: obsLocal.pressure, unit: "%")
+		sendEvent(name: "power", value: obsLocal.dewpt)
+        sendEvent(name: "voltage", value: obsLocal.pressure)
+		// send(name: "weather", value: "n/a")
         // send(name: "weatherIcon", value: null as String, displayed: false)
         send(name: "wind", value: convertWindSpeed(obs[dataScale].windSpeed, dataScale, tempUnits) as String, unit: windUnits) // as String because of bug in determining state change of 0 numbers
         send(name: "windVector", value: "${obs.winddir}° ${convertWindSpeed(obs[dataScale].windSpeed, dataScale, tempUnits)} ${windUnits}")
