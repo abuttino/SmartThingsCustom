@@ -57,6 +57,7 @@ metadata {
         input "stationId", "text", title: "Personal Weather Station ID (optional)", required: false
     }
 
+
     tiles(scale: 2) {
         valueTile("temperature", "device.temperature", height: 2, width: 2) {
             state "default", label:'${currentValue}°',
@@ -341,8 +342,8 @@ def pollUsingPwsId(String stationId) {
 		send(name: "feelsLike", value: convertTemperature(obs[dataScale].heatIndex, dataScale, tempUnits), unit: tempUnits)
 		send(name: "dewpoint", value: convertTemperature(obs[dataScale].dewpt, dataScale, tempUnits), unit: tempUnits)
         send(name: "humidity", value: obs.humidity, unit: "%")
-        send(name: "pressuremb", value: obsPWS.pressure)
-        sendEvent(name: "voltage", value: obsPWS.pressure)
+        send(name: "pressuremb", value: obs[dataScale].pressure)
+        sendEvent(name: "voltage", value: obs[dataScale].pressure)
 		sendEvent(name: "power", value: convertTemperature(obs[dataScale].dewpt, dataScale, tempUnits), unit: tempUnits)
         send(name: "wind", value: convertWindSpeed(obs[dataScale].windSpeed, dataScale, tempUnits) as String, unit: windUnits) // as String because of bug in determining state change of 0 numbers
         send(name: "windVector", value: "${obs.winddir}° ${convertWindSpeed(obs[dataScale].windSpeed, dataScale, tempUnits)} ${windUnits}")
