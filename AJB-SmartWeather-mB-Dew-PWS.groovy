@@ -332,21 +332,18 @@ def pollUsingPwsId(String stationId) {
     log.debug obsWrapper
     if (obsWrapper && obsWrapper.observations && obsWrapper.observations.size()) {
         def obs = obsWrapper.observations[0]
-        def obsLocal = obsWrapper.observations[0].imperial
+        def obsPWS  = obsWrapper.observations[0].imperial
         def dataScale = obs.imperial ? 'imperial' : 'metric'
         send(name: "temperature", value: convertTemperature(obs[dataScale].temp, dataScale, tempUnits), unit: tempUnits)
         
 		// Uncomment line for Windchill during summer months and vice versa
 		// send(name: "feelsLike", value: convertTemperature(obs[dataScale].windChill, dataScale, tempUnits), unit: tempUnits)
 		send(name: "feelsLike", value: convertTemperature(obs[dataScale].heatIndex, dataScale, tempUnits), unit: tempUnits)
-		// send(name: "dewpoint", value: convertTemperature(obs[dataScale].dewpt, dataScale, tempUnits), unit: tempUnits)
-		send(name: "dewpoint", value: obsLocal.dewpt, unit: tempUnits)
+		send(name: "dewpoint", value: convertTemperature(obs[dataScale].dewpt, dataScale, tempUnits), unit: tempUnits)
         send(name: "humidity", value: obs.humidity, unit: "%")
-        send(name: "pressuremb", value: obsLocal.pressure)
-		sendEvent(name: "power", value: obsLocal.dewpt)
-        sendEvent(name: "voltage", value: obsLocal.pressure)
-		// send(name: "weather", value: "n/a")
-        // send(name: "weatherIcon", value: null as String, displayed: false)
+        send(name: "pressuremb", value: obsPWS.pressure)
+        sendEvent(name: "voltage", value: obsPWS.pressure)
+		sendEvent(name: "power", value: convertTemperature(obs[dataScale].dewpt, dataScale, tempUnits), unit: tempUnits)
         send(name: "wind", value: convertWindSpeed(obs[dataScale].windSpeed, dataScale, tempUnits) as String, unit: windUnits) // as String because of bug in determining state change of 0 numbers
         send(name: "windVector", value: "${obs.winddir}° ${convertWindSpeed(obs[dataScale].windSpeed, dataScale, tempUnits)} ${windUnits}")
         def cityValue = obs.neighborhood
