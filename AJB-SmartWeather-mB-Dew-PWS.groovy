@@ -245,6 +245,7 @@ def pollUsingZipCode(String zipCode) {
     def timeZone = location.timeZone ?: timeZone(timeOfDay)
     def timeStamp = new Date().format("yyyy MMM dd EEE h:mm:ss a", location.timeZone)
     sendEvent(name: "Getting Zipcode Info", value: timeStamp)
+	sendEvent(name: "lastUpdate", value: timeStamp)
 
     // Current conditions
     def tempUnits = getTemperatureScale()
@@ -338,6 +339,7 @@ def pollUsingPwsId(String stationId) {
     def timeZone = location.timeZone ?: timeZone(timeOfDay)
     def timeStamp = new Date().format("yyyy MMM dd EEE h:mm:ss a", location.timeZone)
     sendEvent(name: "Getting PWS Info", value: timeStamp)
+	sendEvent(name: "lastUpdate", value: timeStamp)
 
     // Current conditions
     def tempUnits = getTemperatureScale()
