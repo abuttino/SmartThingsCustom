@@ -13,7 +13,7 @@
  *
  *  SmartWeather Station
  *
- *  Author: SmartThings
+ *  Author: abuttino
  *
  *  Date: 2013-04-30
  */
