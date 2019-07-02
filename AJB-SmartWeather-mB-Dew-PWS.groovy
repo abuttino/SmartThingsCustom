@@ -255,7 +255,6 @@ def pollUsingZipCode(String zipCode) {
         // TODO def weatherIcon = obs.icon_url.split("/")[-1].split("\\.")[0]
 		
 		// The below commented lines are retrieved in PWS
-
 		
 		// Uncomment the next NINE lines if you want to use ONLY Zipcode
 		// send(name: "dewpoint", value: obs.temperatureDewPoint, unit: tempUnits)
@@ -263,11 +262,11 @@ def pollUsingZipCode(String zipCode) {
         // sendEvent(name: "power", value: obs.temperatureDewPoint, unit: tempUnits)
         // sendEvent(name: "voltage", value: obs.pressureAltimeter)
         // send(name: "humidity", value: obs.relativeHumidity, unit: "%")
-        send(name: "weather", value: obs.wxPhraseShort)
-        send(name: "weatherIcon", value: obs.iconCode as String, displayed: false)
         // send(name: "wind", value: obs.windSpeed as String, unit: windUnits) // as String because of bug in determining state change of 0 numbers
         // send(name: "windVector", value: "${obs.windDirectionCardinal} ${obs.windSpeed} ${windUnits}")
-        log.trace "Getting location info"
+        send(name: "weather", value: obs.wxPhraseShort)
+        send(name: "weatherIcon", value: obs.iconCode as String, displayed: false)
+		log.trace "Getting location info"
         def loc = getTwcLocation(zipCode).location
         def cityValue = "${loc.city}, ${loc.adminDistrictCode} ${loc.countryCode}"
         if (cityValue != device.currentValue("city")) {
@@ -289,9 +288,9 @@ def pollUsingZipCode(String zipCode) {
 
         def localSunrise = "${tf.format(sunriseDate)}"
         def localSunset = "${tf.format(sunsetDate)}"
+		
         send(name: "localSunrise", value: localSunrise, descriptionText: "Sunrise today is at $localSunrise")
         send(name: "localSunset", value: localSunset, descriptionText: "Sunset today at is $localSunset")
-
         send(name: "illuminance", value: estimateLux(obs, sunriseDate, sunsetDate))
 
         // Forecast
@@ -370,7 +369,6 @@ def pollUsingPwsId(String stationId) {
 
         // send(name: "ultravioletIndex", value: obs.uv)
         // send(name: "uvDescription", value: "n/a")
-
         // send(name: "localSunrise", value: "n/a", descriptionText: "Sunrise is not supported when using PWS")
         // send(name: "localSunset", value: "n/a", descriptionText: "Sunset is not supported when using PWS")
         // send(name: "illuminance", value: null)
