@@ -666,7 +666,9 @@ def updateTiles(data) {
 
                         if (byhveValveState == 'open') {
                             def water_volume_gal = watering_events.irrigation.water_volume_gal?:0
-							def cycle_volume_gal = data.status.flow_sensor.cycle_volume_gal?:0
+							def gallonsInt =  data.status.flow_sensor.cycle_volume_gal.replaceAll("\\[","").replaceAll("\\]","") as float
+							def gallonsRound = Math.round(gallonsInt)
+							def cycle_volume_gal = gallonsRound?:0
                             
 							log.warn("${cycle_volume_gal} Where gallons will go when active   <<<<-------------------------")
                             
